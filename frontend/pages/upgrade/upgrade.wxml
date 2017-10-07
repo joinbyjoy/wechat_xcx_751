@@ -1,0 +1,43 @@
+<!-- upgrade.wxml -->
+<view class="full-page">
+    <image class="background" src="/resource/background.jpg" />
+    <image class="tip-close" src="/resource/tip-close.png" bindtap="navigateBack" />
+    <view class="question-info" hidden="{{loadingComplete}}">
+        <view class="title">
+            <text>{{Title}}</text>
+        </view>
+        <view class="intro1">
+            <text>数据读取中，请稍候 ...</text>
+        </view>
+    </view>
+    <view class="question-info" hidden="{{!loadingComplete}}">
+        <view class="title">
+            <text>{{Title}}</text>
+        </view>
+        <view class="intro1">
+            <text>5 道题目中答对 3 道即可获得好礼\n</text>
+            <text>{{subTitle}}</text>
+        </view>
+        <view class="question-groups">
+            <view class="button" bindtap="buttonTap" wx:for="{{questionGroups}}" wx:key="{{item.uuid}}" id="{{item.uuid}}">
+                <image src="/resource/qbtn0.png" />
+                <image src="/resource/qbtn1.png" hidden="{{questionGroupSelected!=item.uuid}}" />
+                <text>{{item.name}}</text>
+            </view>
+        </view>
+        <view class="intro2">
+            <text>答题规则：\n
+                1、“奖品升级”成功前，每天仅能答题一次。
+                2、每题限时{{answerTimeLimit}}s，超时按答错计算。
+                3、中途返回、退出、中断均按失败计算。</text>
+        </view>
+    </view>
+    <image class="round-button" src="/resource/btn-start.png" bindtap="startAnswer" />
+</view>
+
+<view class="floatWindow" hidden="{{hideAlert}}">
+    <view class="floatBox">
+        <view class="title">{{Alert.title}}</view>
+        <view class="content">{{Alert.content}}</view>
+    </view>
+</view>

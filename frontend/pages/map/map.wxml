@@ -1,0 +1,5 @@
+<!-- map.wxml -->
+
+<map id="map" show-location scale="{{scale}}" longitude="{{longitude}}" latitude="{{latitude}}" controls="{{controls}}" bindcontroltap="controltap" markers="{{markers}}" bindmarkertap="showMarkerPlace">
+    <cover-view class="signed-number">{{signedNumber}}/{{signedNeeded}}</cover-view>
+</map>

@@ -1,0 +1,9 @@
+<!-- prize.wxml -->
+<view class="full-page">
+    <image class="background" src="/resource/background.jpg" />
+    <image class="tip-close" src="/resource/tip-close.png" bindtap="navigateBack" />
+    <image class="showToExchangeReward" src="{{ExchangeReward}}" />
+    <view>
+        <text>请到达领奖地点后，出示给工作人员</text>
+    </view>
+</view>

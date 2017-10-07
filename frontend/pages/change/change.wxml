@@ -1,0 +1,29 @@
+<!-- change.wxml -->
+<view class="full-page">
+    <image class="background" src="/resource/background.jpg" />
+    <image class="tip-close" src="/resource/tip-close.png" bindtap="navigateBack" />
+    <image class="icon-gift" src="/resource/icon-gift.png" />
+    <view class="gift-intro" hidden="{{loadingComplete}}">
+        <text>信息读取中，请稍候 ...</text>
+    </view>
+    <view class="gift-intro" hidden="{{!loadingComplete || signedNumber >= signedNeeded}}">
+        <text>集齐 {{signedNeeded}} 处签到即可兑换奖品，您目前签到了 {{signedNumber}} 处，请继续努力</text>
+        <image class="round-button" src="/resource/btn-map.png" bindtap="navigateBack" />
+    </view>
+    <view class="gift-intro" hidden="{{!loadingComplete || signedNumber < signedNeeded}}">
+        <view style="text-indent: 1em;">
+            <text>{{basicGiftInfo}}</text>
+        </view>
+        <view class="gift-change-buttons">
+            <view class="button" bindtap="toastHaveBaisc" hidden="{{!basicGiftRecieved}}">已领奖</view>
+            <view class="button" bindtap="changeBaiscGift" hidden="{{basicGiftRecieved}}">领取纪念奖</view>
+            <view class="button" bindtap="toastHaveUpgrade" hidden="{{!upgradeGiftRecieved}}">已兑奖</view>
+            <view class="button" bindtap="goCheckResult" hidden="{{upgradeGiftRecieved || !waitingForExchange}}">去领奖</view>
+            <view class="button" bindtap="goCheckResult" hidden="{{upgradeGiftRecieved || waitingForExchange || !forbidTodayAnswer}}">查看结果</view>
+            <view class="button" bindtap="answerQuestion" hidden="{{upgradeGiftRecieved || waitingForExchange || forbidTodayAnswer}}">奖品升级</view>
+        </view>
+<!--         <view>
+            <text class="gift-tip">*兑奖请在兑换地点由工作人员操作，\n否则有可能无法领奖，还请注意！谢谢！</text>
+        </view> -->
+    </view>
+</view>

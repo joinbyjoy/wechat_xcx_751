@@ -1,0 +1,13 @@
+{
+  "apps": [{
+    "name": "tthus751",
+    "script": "bin/www",
+    "env": "production",
+    "log_date_format": "YYYY-MM-DD HH:mm:ss Z",
+    "watch": [
+      "app.js",
+      "lib/*",
+      "routes/*"
+    ]
+  }]
+}

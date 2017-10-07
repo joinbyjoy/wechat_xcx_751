@@ -1,0 +1,24 @@
+/** place.wxss **/
+
+.place-image {
+    position: absolute;
+    top: 100rpx;
+    left: 50%;
+    bottom: 240rpx;
+    height: auto;
+    transform: translateX(-50%);
+}
+
+.signButton {
+    position: absolute;
+    left: 50%;
+    width: 50%;
+    bottom: 110rpx;
+    transform: translateX(-50%);
+    border: 6rpx solid white;
+    border-radius: 12rpx;
+    font-size: 42rpx;
+    line-height: 2;
+    text-align: center;
+    color: white;
+}

@@ -1,0 +1,59 @@
+/** upgrade.wxss **/
+
+.question-info {
+    position: absolute;
+    top: 12%;
+    left: 10%;
+    width: 80%;
+    bottom: 15%;
+    color: white;
+}
+
+.title {
+    font-size: 60rpx;
+    text-align: center;
+    font-weight: bold;
+}
+
+.intro1 {
+    font-size: 36rpx;
+    text-align: center;
+    padding-top: 50rpx;
+    line-height: 2;
+}
+
+.intro2 {
+    font-size: 30rpx;
+    position: absolute;
+    bottom: 3%;
+    line-height: 180%;
+    color: #fce803;
+}
+
+.question-groups {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.button {
+    width: 157rpx;
+    height: 68rpx;
+    margin-top: 48rpx;
+    position: relative;
+}
+
+.button image {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.button text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 32rpx;
+    white-space: nowrap;
+}

@@ -1,0 +1,10 @@
+/** welcome.wxss **/
+
+.welcome-intro {
+    position: absolute;
+    top: 15%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 526rpx;
+    height: 775rpx;
+}

@@ -1,0 +1,31 @@
+<!-- result.wxml -->
+<view class="full-page">
+    <image class="background" src="/resource/background.jpg" />
+    <view class="result" hidden="{{loadingComplete}}">
+        <image class="icon" src="/resource/result-success.png" />
+        <image class="icon" src="/resource/result-failure.png" />
+        <view class="extra">
+            <text>信息读取中，请稍候 ...</text>
+        </view>
+    </view>
+    <view class="result" hidden="{{!loadingComplete || !waitingForExchange}}">
+        <image class="icon" src="/resource/result-success.png" />
+        <view class="title">恭喜您，闯关成功！</view>
+        <view class="detail">
+            <text>{{detail}}</text>
+        </view>
+        <view class="extra">
+            <text>{{extra}}</text>
+        </view>
+        <view class="button" bindtap="changePrize" hidden="{{upgradeGiftRecieved}}">兑换</view>
+        <view class="button" bindtap="navigateBack" hidden="{{!upgradeGiftRecieved}}">已兑奖</view>
+    </view>
+    <view class="result" hidden="{{!loadingComplete || waitingForExchange}}">
+        <image class="icon" src="/resource/result-failure.png" />
+        <view class="title failure">很抱歉，闯关失败！</view>
+        <view class="detail">
+            <text>5 道题目中您没有答对 3 道哦\n明天请再来挑战</text>
+        </view>
+        <view class="button" bindtap="reLaunchGame">明天见</view>
+    </view>
+</view>

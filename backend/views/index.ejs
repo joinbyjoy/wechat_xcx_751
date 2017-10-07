@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>751北京时尚设计广场</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <link rel="icon" type="image/jpeg" href="/favicon.jpg" />
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <style type="text/css">
+        .panel-body {
+            text-align: center;
+        }
+
+        div>span.label {
+            font-size: 20px;
+        }
+
+        .input-group {
+            padding: 1em;
+        }
+
+        div.alert {
+            margin: 0 1em 1em 1em;
+            opacity: .8;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container" id="main">
+        <h3>客户信息汇总</h3>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">客户手机</h3>
+            </div>
+            <div class="input-group" v-if="mobile">
+                <input type="text" v-model="mobile" class="form-control" readonly="" aria-describedby="visitorMobile">
+                <span class="input-group-addon" id="visitorMobile">已填写</span>
+            </div>
+            <div class="input-group" v-else>
+                <input type="tel" v-model="inputMobile" class="form-control" @focus="clearStatus" placeholder="输入用户手机号码">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button" @click="fillVisitorMobile()">提交</button>
+                </span>
+            </div>
+            <div class="alert alert-danger" role="alert" v-if="formatError">
+                手机号码格式错误
+                <button class="btn btn-default" type="button" @click="fillVisitorMobile(true)">强制提交</button>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">已签到 {{signedPlace.length}} 处</h3>
+                <div>
+                    <span v-for="place in signedPlace"><br>{{place.stamp}} &nbsp; {{place.name}}</span>
+                </div>
+            </div>
+            <div class="panel-heading" v-if="basicGiftRecieved">
+                <span>领奖时间：{{basicGiftRecieved}}</span>
+            </div>
+            <div class="panel-body">
+                <span class="label label-warning" v-if="basicGiftRecieved">纪念奖已发放</span>
+                <button class="btn btn-success" v-else-if="signedPlace.length>=signedNeeded" type="button" @click="recieveGift">发放纪念奖</button>
+                <span class="label label-warning" v-else>纪念奖未达成领奖条件</span>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">升级奖</h3>
+                <p v-if="upgradeGiftRecieved">
+                    <br> 题库选择：{{questionInfo.name}}
+                    <br> 奖品信息：{{questionInfo.detail}}
+                    <br> {{questionInfo.extra}}
+                </p>
+                <p v-else-if="questionInfo.start">
+                    <br> 开始答题：{{questionInfo.start}}
+                    <br> 结束答题：{{questionInfo.stop}}
+                    <br> 答题用时：{{questionInfo.duration}} 秒 <span class="label label-warning" v-if="questionInfo.duration > questionInfo.timeLimit">超时</span>
+                    <br> 题库选择：{{questionInfo.name}}
+                    <br> 正确答案：{{questionInfo.correct}} <span class="label label-warning" v-if="questionInfo.correct < questionInfo.needCorrect">不合格</span>
+                    <br> 奖品信息：{{questionInfo.detail}}
+                    <br> {{questionInfo.extra}}
+                </p>
+            </div>
+            <div class="panel-heading" v-if="upgradeGiftRecieved">
+                <span>领奖时间：{{upgradeGiftRecieved}}</span>
+            </div>
+            <div class="panel-body">
+                <span class="label label-warning" v-if="upgradeGiftRecieved">已领奖</span>
+                <button type="button" class="btn btn-success" v-else-if="questionInfo.correct >= questionInfo.needCorrect && questionInfo.duration <= questionInfo.timeLimit" @click="recieveUpgrade">发放升级奖</button>
+                <span class="label label-warning" v-else>未达成获奖条件</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="/javascripts/vue.min.js"></script>
+    <script type="text/javascript">
+        let data = <%- data %>;
+        data.inputMobile = '';
+        data.formatError = false;
+
+        function adminAction(method, action, result, callback) {
+            $.post("<%- server_api %>", {
+                visitor: data.uuid,
+                method: method,
+                action: action,
+                result: result
+            }, callback);
+        }
+        var $root = new Vue({
+            el: document.querySelector('#main'),
+            data: data,
+            methods: {
+                clearStatus() {
+                    this.formatError = false;
+                },
+                fillVisitorMobile(force) {
+                    if (force && this.inputMobile != '' || /\d{11}/.test(this.inputMobile)) {
+                        this.updateMobile();
+                    } else {
+                        this.formatError = true;
+                    }
+                },
+                updateMobile() {
+                    adminAction('update', 'mobile', this.inputMobile, (res) => {
+                        this.mobile = res.data;
+                        this.formatError = false;
+                    });
+                },
+                recieveGift() {
+                    adminAction('append', 'basicGiftRecieved', '客服发放', (res) => {
+                        this.basicGiftRecieved = res.data;
+                    });
+                },
+                recieveUpgrade() {
+                    adminAction('append', 'upgradeGiftRecieved', '客服发放', (res) => {
+                        this.upgradeGiftRecieved = res.data;
+                    });
+                },
+                // clearSingedPlace() {
+                //     adminAction('clear', 'clearSingedPlace', '', (res) => {
+                //         this.signedPlace = 0;
+                //     });
+                // },
+                // clearGift() {
+                //     adminAction('clear', 'basicGiftRecieved', '', (res) => {
+                //         this.basicGiftRecieved = '';
+                //     });
+                // },
+                // clearUpgrade() {
+                //     adminAction('clear', 'upgradeGiftRecieved', '', (res) => {
+                //         this.upgradeGiftRecieved = '';
+                //     });
+                // }
+            }
+        });
+    </script>
+</body>
+
+</html>

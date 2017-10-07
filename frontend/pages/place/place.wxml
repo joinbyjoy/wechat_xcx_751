@@ -1,0 +1,14 @@
+<!-- place.wxml -->
+<view class="full-page">
+    <image class="background" src="/resource/background.jpg" />
+    <image class="tip-close" src="/resource/tip-close.png" bindtap="navigateBack" />
+    <image class="place-image" mode="aspectFit" src="{{placeImage}}" />
+    <view class="signButton" bindtap="signAndBack">{{buttonText}}</view>
+</view>
+
+<view class="floatWindow" hidden="{{hideResult}}">
+    <view class="floatBox">
+        <view class="title">{{result.title}}</view>
+        <view class="content">{{result.content}}</view>
+    </view>
+</view>

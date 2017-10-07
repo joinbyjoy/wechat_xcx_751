@@ -1,0 +1,42 @@
+/** result.wxss **/
+
+.result {
+    position: absolute;
+    top: 12%;
+    left: 10%;
+    width: 80%;
+    bottom: 5%;
+    color: white;
+    font-size: 36rpx;
+    text-align: center;
+}
+
+.icon {
+    width: 213rpx;
+    height: 213rpx;
+}
+
+.title {
+    font-size: 60rpx;
+    text-align: center;
+    line-height: 4;
+}
+
+.title.failure {
+    color: #ff6363;
+}
+
+.extra {
+    padding-top: 60rpx;
+}
+
+.button {
+    position: absolute;
+    left: 20%;
+    bottom: 10%;
+    font-size: 42rpx;
+    width: 60%;
+    border: 6rpx solid white;
+    line-height: 2;
+    border-radius: 12rpx;
+}

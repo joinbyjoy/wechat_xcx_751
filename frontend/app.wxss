@@ -1,0 +1,64 @@
+/**app.wxss**/
+
+.full-page {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.full-page .background {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.full-page .round-button {
+    position: absolute;
+    left: 50%;
+    bottom: 32rpx;
+    width: 128rpx;
+    height: 128rpx;
+    transform: translateX(-50%);
+}
+
+.full-page .tip-close {
+    position: absolute;
+    width: 47rpx;
+    height: 47rpx;
+    top: 20rpx;
+    right: 20rpx;
+}
+
+.floatWindow {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, .5);
+}
+
+.floatWindow .floatBox {
+    color: white;
+    box-sizing: border-box;
+    padding: 40rpx;
+    border-radius: 20rpx;
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    width: 80%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, .5);
+}
+
+.floatWindow .title {
+    text-align: center;
+    font-size: 48rpx;
+    padding-bottom: 10rpx;
+}
+
+.floatWindow .content {
+    font-size: 36rpx;
+    padding-top: 10rpx;
+}

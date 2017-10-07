@@ -1,0 +1,19 @@
+/** prize.wxss **/
+
+.showToExchangeReward {
+    position: absolute;
+    top: 140rpx;
+    width: 500rpx;
+    height: 500rpx;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.full-page view {
+    position: absolute;
+    top: 700rpx;
+    left: 50%;
+    width: 500rpx;
+    transform: translateX(-50%);
+    color: white;
+}

@@ -1,0 +1,18 @@
+<!-- question.wxml -->
+
+<view class="full-page">
+    <image class="background" src="/resource/background.jpg" />
+    <view class="question" wx:for="{{Questions}}" wx:key="{{item.id}}" hidden="{{index != currentIndex}}">
+        <view class="title">{{item.title}}</view>
+        <radio-group class="choices" data-qid="{{index}}" bindchange="answerSelect">
+            <label wx:for="{{item.choices}}" wx:for-item="title" wx:for-index="idx" wx:key="{{title}}">
+                <radio value="{{idx}}" /> <text>{{title}}</text>
+            </label>
+        </radio-group>
+    </view>
+    <view class="countDown">
+        <view class="nextQuestion" bindtap="nextQuestion">{{questionButtonText}}</view>
+        <image class="ico-clock" src="/resource/ico-clock.png" />
+        <text>本页答题时间剩余 {{remainSeconds}} 秒</text>
+    </view>
+</view>

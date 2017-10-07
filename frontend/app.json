@@ -1,0 +1,19 @@
+{
+    "pages": [
+        "pages/welcome/welcome",
+        "pages/map/map",
+        "pages/place/place",
+        "pages/change/change",
+        "pages/upgrade/upgrade",
+        "pages/question/question",
+        "pages/result/result",
+        "pages/prize/prize"
+    ],
+    "window":
+    {
+        "backgroundTextStyle": "light",
+        "navigationBarBackgroundColor": "#262626",
+        "navigationBarTitleText": "尚隐带你玩转751国际设计节",
+        "navigationBarTextStyle": "white"
+    }
+}

@@ -1,0 +1,6 @@
+<!-- welcome.wxml -->
+<view class="full-page">
+    <image class="background" src="/resource/welcome.jpg" />
+    <image class="round-button" src="/resource/btn-go.png" bindtap="openMap" />
+    <image src="http://ofyaw8e1z.bkt.clouddn.com/4891506398898_.pic.jpg" style="opacity: 0;position: absolute;width: 10rpx;height: 10rpx;" />
+</view>

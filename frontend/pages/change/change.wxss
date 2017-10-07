@@ -1,0 +1,41 @@
+/** change.wxss **/
+.icon-gift {
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    width: 305rpx;
+    height: 233rpx;
+    transform: translateX(-50%);
+}
+
+.gift-intro {
+    color: white;
+    position: absolute;
+    top: 35%;
+    left: 12%;
+    right: 12%;
+    bottom: 0%;
+    text-align: justify;
+}
+
+.gift-change-buttons {
+    display: flex;
+    justify-content: space-around;
+    position: absolute;
+    width: 100%;
+    bottom: 30%;
+}
+
+.gift-change-buttons .button {
+    width: 40%;
+    border: 6rpx solid white;
+    text-align: center;
+    line-height: 2;
+    border-radius: 12rpx;
+}
+.gift-tip {
+    position: absolute;
+    bottom: 14%;
+    font-size: 28rpx;
+    color: #fce803;
+}
