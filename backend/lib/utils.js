@@ -26,14 +26,14 @@ function util(config) {
 
 util.prototype = {
     format(sql, args) {
-        return new Promise((success, reject) => {
+        return new Promise((resolve, reject) => {
             let result = mysql.format(sql, args);
             console.log('\x1b[36m%s\x1b[0m', result);
-            success(result);
+            resolve(result);
         });
     },
     query(sql, args, debug) {
-        return new Promise((success, reject) => {
+        return new Promise((resolve, reject) => {
             this.pool.getConnection((err, conn) => {
                 // err && reject(err);
                 var query = conn.query(sql, args, (error, results, fields) => {
@@ -43,7 +43,7 @@ util.prototype = {
                         reject(error);
                     } else {
                         debug && console.log('\x1b[36m%s\x1b[0m', query.sql);
-                        success(results);
+                        resolve(results);
                     }
                 });
             });
@@ -51,7 +51,7 @@ util.prototype = {
     },
     fetchSession(code) {
         var session_url = this.config.appSessionUrl(code);
-        return new Promise((success, reject) => {
+        return new Promise((resolve, reject) => {
             https.request(session_url, (res) => {
                 var datas = [],
                     size = 0;
@@ -59,7 +59,7 @@ util.prototype = {
                     datas.push(chunk);
                     size += chunk.length;
                 }).on('end', () => {
-                    success(JSON.parse(Buffer.concat(datas, size).toString()));
+                    resolve(JSON.parse(Buffer.concat(datas, size).toString()));
                 })
             }).on('error', reject).end();
         });
@@ -91,11 +91,9 @@ util.prototype = {
                 { project_id: this.config.project },
                 'sort'
             ]);
-        }).then((questionGroups) => {
+        }).then(questionGroups => {
             result.questionGroups = questionGroups;
-            return new Promise((success, reject) => {
-                success(result);
-            });
+            return Promise.resolve(result);
         });
     },
     checkVisitor(visitor) {
@@ -143,11 +141,7 @@ util.prototype = {
                 'visitor', 'signed_icon', 'unsigned_icon', 'iconPath',
                 'visitor', 'signed', 'places', 'place_signed',
                 { visitor: visitor }, { project_id: this.config.project }, { closed: 0 }
-            ]).then((data) => {
-            return new Promise((success, reject) => {
-                success(data)
-            });
-        });
+            ]);
     },
     signinPlace(data) {
         return this.query("INSERT IGNORE INTO ?? SET ?", [
@@ -199,18 +193,16 @@ util.prototype = {
                 ['a.id', 'title', 'choices', 'answer'], 'questions',
                 'question_group', 'group_id', 'b.id',
                 { 'b.uuid': groupid }, 'a.sort'
-            ]).then((questions) => {
-            return new Promise((success, reject) => {
-                let result = [];
-                questions.map((q) => {
-                    result.push({
-                        title: q.title,
-                        choices: q.choices.split(','),
-                        answer: q.answer
-                    });
+            ]).then(questions => {
+            let result = [];
+            questions.map((q) => {
+                result.push({
+                    title: q.title,
+                    choices: q.choices.split(','),
+                    answer: q.answer
                 });
-                success(result);
             });
+            return Promise.resolve(result);
         });
     },
     getVisitorAwardInfo(visitor) {
@@ -240,9 +232,7 @@ util.prototype = {
                     }
                 }
             });
-            return new Promise((success, reject) => {
-                success(result);
-            });
+            return Promise.resolve(result);
         });
     },
     summuryInfo(visitor) {
@@ -317,9 +307,7 @@ util.prototype = {
                     });
                 });
             } else {
-                return new Promise((success, reject) => {
-                    success();
-                });
+                return Promise.resolve();
             }
         }).then(() => {
             return this.query("SELECT ?? FROM ?? WHERE ? AND ?", [
@@ -327,9 +315,7 @@ util.prototype = {
             ]);
         }).then(uInfo => {
             result.mobile = uInfo.length && uInfo.pop().mobile || null;
-            return new Promise((success, reject) => {
-                success(result);
-            });
+            return Promise.resolve(result);
         });
     }
 };
