@@ -1,6 +1,6 @@
 var qr = require('qr-image'),
     router = require('express').Router(),
-    utils = require(global.NODE_PATH + '/lib/utils')('production');
+    utils = require(global.RootPath + '/lib/utils')('production');
 
 // 获取项目配置，名称，中心点，。。。
 router.post('/getProject', function (req, res, next) {

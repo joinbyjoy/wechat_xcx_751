@@ -1,6 +1,6 @@
 var qr = require('qr-image'),
     router = require('express').Router(),
-    utils = require(global.NODE_PATH + '/lib/utils')('beta');
+    utils = require(global.RootPath + '/lib/utils')('beta');
 
 router.all('*', function (req, res, next) {
     if (req.body.visitor) {

@@ -2,8 +2,14 @@
   "name": "751_Design",
   "version": "1.0.0",
   "private": true,
+  "author": {
+    "name": "Rick Cart",
+    "email": "tagsworld@gmail.com"
+  },
+  "homepage": "http://www.jsfile.com/",
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "NODE_ENV=production node ./bin/www",
+    "dev": "NODE_ENV=development supervisor ./bin/www"
   },
   "dependencies": {
     "body-parser": "^1.18.2",
