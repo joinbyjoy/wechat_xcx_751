@@ -1,4 +1,5 @@
-var path = require('path'),
+var package = require('./package.json'),
+    path = require('path'),
     logger = require('morgan'),
     express = require('express'),
     favicon = require('serve-favicon'),
@@ -13,10 +14,10 @@ var app = express()
 with(app) {
     disable('x-powered-by');
     locals.appConfig = {
-        name: process.env.npm_package_name,
-        version: process.env.npm_package_version,
-        author: process.env.npm_package_author_name,
-        homepage: process.env.npm_package_homepage
+        name: package.name,
+        version: package.version,
+        author: package.author.name,
+        homepage: package.homepage
     };
 
     if (get('env') === 'production') {
@@ -50,7 +51,7 @@ app.use(express.static(path.join(__dirname, 'public')))
         res.status(err.status || 500);
         res.render('error', {
             message: err.status + ' - ' + err.message,
-            error: app.get('env') === 'development' ? err : {}
+            error: app.get('env') === 'production' ? '' : err.stack
         });
     });
 
