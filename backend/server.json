@@ -2,12 +2,18 @@
   "apps": [{
     "name": "tthus751",
     "script": "bin/www",
-    "env": "production",
+    "env": {
+      "NODE_ENV": "production"
+    },
     "log_date_format": "YYYY-MM-DD HH:mm:ss Z",
     "watch": [
       "app.js",
       "lib/*",
       "routes/*"
+    ],
+    "ignore_watch": [
+      "node_modules",
+      "public"
     ]
   }]
 }
