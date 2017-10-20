@@ -9,7 +9,7 @@
   "homepage": "http://www.jsfile.com/",
   "scripts": {
     "start": "NODE_ENV=production node ./bin/www",
-    "dev": "NODE_ENV=development supervisor ./bin/www"
+    "test": "NODE_ENV=development supervisor ./bin/www"
   },
   "dependencies": {
     "body-parser": "^1.18.2",

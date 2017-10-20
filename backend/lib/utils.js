@@ -1,3 +1,9 @@
+var crypto = require("crypto"),
+    https = require("https"),
+    mysql = require("mysql"),
+    config = require('./config'),
+    _pool = mysql.createPool(config.mysql);
+
 Date.prototype.format = function (tpl = 'yyyy-mm-dd hh:ii:ss') {
     [
         [/y+/g, this.getFullYear()],
@@ -13,44 +19,27 @@ Date.prototype.format = function (tpl = 'yyyy-mm-dd hh:ii:ss') {
     return tpl;
 };
 
-var crypto = require("crypto"),
-    https = require("https"),
-    mysql = require("mysql");
-
 function util(config) {
-    this.config = config;
-    this.pool = mysql.createPool(config.mysql).on('enqueue', () => {
+    _pool.on('enqueue', () => {
         console.log('\x1b[36m%s\x1b[0m', 'Mysql: Waiting for available connection slot');
     });
 };
 
 util.prototype = {
     format(sql, args) {
-        return new Promise((resolve, reject) => {
-            let result = mysql.format(sql, args);
-            console.log('\x1b[36m%s\x1b[0m', result);
-            resolve(result);
-        });
+        let result = mysql.format(sql, args);
+        // console.log('\x1b[36m%s\x1b[0m', result);
+        return Promise.resolve(result);
     },
-    query(sql, args, debug) {
+    query(sql, args) {
         return new Promise((resolve, reject) => {
-            this.pool.getConnection((err, conn) => {
-                // err && reject(err);
-                var query = conn.query(sql, args, (error, results, fields) => {
-                    conn.release();
-                    if (error) {
-                        console.log('\x1b[41m%s\x1b[0m', query.sql);
-                        reject(error);
-                    } else {
-                        debug && console.log('\x1b[36m%s\x1b[0m', query.sql);
-                        resolve(results);
-                    }
-                });
+            _pool.query(sql, args, (error, results, fields) => {
+                error ? reject(error) : resolve(results);
             });
         });
     },
     fetchSession(code) {
-        var session_url = this.config.appSessionUrl(code);
+        var session_url = config.appSessionUrl(code);
         return new Promise((resolve, reject) => {
             https.request(session_url, (res) => {
                 var datas = [],
@@ -74,26 +63,23 @@ util.prototype = {
         var decoded = decipher.update(crypted, 'binary', 'utf8');
         decoded += decipher.final('utf8');
         decoded = JSON.parse(decoded);
-        decoded.watermark = (decoded.watermark.appid == this.config.appId);
+        decoded.watermark = (decoded.watermark.appid == config.appId);
         return decoded;
     },
     getProject() {
-        let result = {};
-        return this.query("SELECT * FROM ?? WHERE ?", [
-            'project', { id: this.config.project }
-        ]).then((project) => {
-            result.settings = project[0];
-            delete result.settings.id;
-            delete result.settings.create_time;
-            return this.query('SELECT ?? FROM ?? WHERE ? ORDER BY ??', [
-                ['uuid', 'name', 'detail', 'extra'],
-                'question_group',
-                { project_id: this.config.project },
-                'sort'
-            ]);
-        }).then(questionGroups => {
-            result.questionGroups = questionGroups;
-            return Promise.resolve(result);
+        return Promise.all([
+            this.query("SELECT * FROM ?? WHERE ?", ['project', { id: config.project }]),
+            this.query('SELECT ?? FROM ?? WHERE ? ORDER BY ??', [
+                ['uuid', 'name', 'detail', 'extra'], 'question_group', { project_id: config.project }, 'sort'
+            ])
+        ]).then(results => {
+            let settings = results[0][0];
+            delete settings.id;
+            delete settings.create_time;
+            return Promise.resolve({
+                settings: settings,
+                questionGroups: results[1]
+            });
         });
     },
     checkVisitor(visitor) {
@@ -103,13 +89,13 @@ util.prototype = {
     },
     createVisitor(info) {
         var newVisitor = {
-            project_id: this.config.project,
+            project_id: config.project,
             openid: null,
             unionid: null,
             rawdata: null,
             systemInfo: info.systemInfo
         };
-        return this.fetchSession(info.code).then((openInfo) => {
+        return this.fetchSession(info.code).then(openInfo => {
             newVisitor.openid = openInfo.openid;
             if (info.iv) {
                 var userInfo = this.decodeUnionInfo(openInfo.session_key, info.iv, info.crypted);
@@ -123,10 +109,10 @@ util.prototype = {
                     'visitors', 'uuid', newVisitor
                 ]);
             }
-        }).then(() => {
+        }).then(noop => {
             return this.query('SELECT ?? FROM ?? WHERE ? AND ?', [
                 'uuid', 'visitors',
-                { project_id: this.config.project }, { openid: newVisitor.openid }
+                { project_id: config.project }, { openid: newVisitor.openid }
             ]);
         });
     },
@@ -140,7 +126,7 @@ util.prototype = {
                 ['uuid', 'a.latitude', 'a.longitude', 'icon_width', 'icon_height', 'picture'],
                 'visitor', 'signed_icon', 'unsigned_icon', 'iconPath',
                 'visitor', 'signed', 'places', 'place_signed',
-                { visitor: visitor }, { project_id: this.config.project }, { closed: 0 }
+                { visitor: visitor }, { project_id: config.project }, { closed: 0 }
             ]);
     },
     signinPlace(data) {
@@ -163,7 +149,7 @@ util.prototype = {
                 if (data.length) {
                     let answers = data[0].answers.split(',');
                     this.query("SELECT ?? FROM ?? WHERE ?", [
-                        ['answerTimeLimit', 'minCorrectNum'], 'project', { id: this.config.project }
+                        ['answerTimeLimit', 'minCorrectNum'], 'project', { id: config.project }
                     ]).then(setting => {
                         let startAnswer = Date.parse(data[0].stamp);
                         if (stopAnswer - startAnswer <= (setting[0].answerTimeLimit * answers.length + 20) * 1000) {
@@ -311,7 +297,7 @@ util.prototype = {
             }
         }).then(() => {
             return this.query("SELECT ?? FROM ?? WHERE ? AND ?", [
-                'mobile', 'visitors', { uuid: visitor }, { project_id: this.config.project }
+                'mobile', 'visitors', { uuid: visitor }, { project_id: config.project }
             ]);
         }).then(uInfo => {
             result.mobile = uInfo.length && uInfo.pop().mobile || null;
@@ -320,7 +306,4 @@ util.prototype = {
     }
 };
 
-module.exports = function (app) {
-    var config = require('./config')(app);
-    return new util(config);
-};
+module.exports = new util();
